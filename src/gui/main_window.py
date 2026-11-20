@@ -266,7 +266,7 @@ class MainWindow(QMainWindow):
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate().addDays(-1))  # wczorajszy dzień
-        self.date_edit.setDisplayFormat("yyyy-MM-dd")
+        self.date_edit.setDisplayFormat("dd-MM-yyyy")
         filter_layout.addWidget(self.date_edit)
 
         filter_layout.addWidget(QLabel("Godzina od:"))
