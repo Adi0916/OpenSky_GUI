@@ -262,31 +262,31 @@ class MainWindow(QMainWindow):
         filter_layout = QVBoxLayout(self.filter_box)
         filter_layout.setSpacing(8)
 
-        filter_layout.addWidget(QLabel("Dzień lotów:"))
+        filter_layout.addWidget(QLabel("Flight day:"))
         self.date_edit = QDateEdit()
         self.date_edit.setCalendarPopup(True)
         self.date_edit.setDate(QDate.currentDate().addDays(-1))  # wczorajszy dzień
         self.date_edit.setDisplayFormat("dd-MM-yyyy")
         filter_layout.addWidget(self.date_edit)
 
-        filter_layout.addWidget(QLabel("Godzina od:"))
+        filter_layout.addWidget(QLabel("Hour from:"))
         self.time_from = QTimeEdit()
         self.time_from.setTime(QTime(15, 0))  # 15:00
         self.time_from.setDisplayFormat("HH:mm")
         filter_layout.addWidget(self.time_from)
 
-        filter_layout.addWidget(QLabel("Godzina do:"))
+        filter_layout.addWidget(QLabel("Hour to:"))
         self.time_to = QTimeEdit()
         self.time_to.setTime(QTime(16, 0))  # 16:00
         self.time_to.setDisplayFormat("HH:mm")
         filter_layout.addWidget(self.time_to)
 
-        filter_layout.addWidget(QLabel("Lotnisko (ICAO, opcjonalnie):"))
+        filter_layout.addWidget(QLabel("Airport (ICAO, optional):"))
         self.airport_input = QLineEdit()
-        self.airport_input.setPlaceholderText("np. EPKK, WAW")
+        self.airport_input.setPlaceholderText("e.g. EPKK, WAW")
         filter_layout.addWidget(self.airport_input)
 
-        btn_apply = QPushButton("Pokaż na mapie")
+        btn_apply = QPushButton("Show on map")
         btn_apply.clicked.connect(self.apply_flight_filters)
         filter_layout.addWidget(btn_apply)
 

@@ -8,9 +8,14 @@ DB_NAME = str(DB_PATH)  # zachowane na wypadek, gdyby inne moduły importowały 
 
 
 def connect_db():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = _sqlite3.connect(DB_NAME)
+    db_path = DB_PATH.expanduser().resolve()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    conn = _sqlite3.connect(str(db_path), timeout=30.0)
     conn.execute("PRAGMA foreign_keys = ON")
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 30000")
+    conn.execute("PRAGMA synchronous = NORMAL")
     return conn
 
 

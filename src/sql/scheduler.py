@@ -19,7 +19,7 @@ def start_scheduler():
 
     schedule.every(10).minutes.do(run_etl)
 
-    logging.info("Application scheduled. Use Ctrl+C to stop the application.")
+    #logging.info("Application scheduled. Use Ctrl+C to stop the application.")
     print("--- Waiting for next execution ---", flush=True)
 
     try:
