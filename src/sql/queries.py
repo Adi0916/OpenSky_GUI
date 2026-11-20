@@ -169,3 +169,59 @@ def get_system_health_report(status_filter=None):
         cursor = conn.execute(query, params)
         return cursor.fetchall()
 
+#6: Trasy lotów do wyświetlenia na mapie (wylot -> przylot z koordynatami)
+
+def get_flights_for_map(dt_from=None, dt_to=None, airport_code=None):
+    query = '''
+        SELECT
+            COALESCE(ac.callsign, f.aircraft_id) AS callsign,
+            f.departure_airport_id AS from_code,
+            f.arrival_airport_id AS to_code,
+            dep.latitude AS from_lat,
+            dep.longitude AS from_lon,
+            arr.latitude AS to_lat,
+            arr.longitude AS to_lon,
+            f.departure_date_time AS dep_time
+        FROM flight_data f
+        JOIN airport dep ON f.departure_airport_id = dep.icao_code
+        JOIN airport arr ON f.arrival_airport_id = arr.icao_code
+        LEFT JOIN aircraft ac ON f.aircraft_id = ac.icao24
+        WHERE dep.latitude IS NOT NULL
+          AND dep.longitude IS NOT NULL
+          AND arr.latitude IS NOT NULL
+          AND arr.longitude IS NOT NULL
+    '''
+    params = []
+
+    # W etl.py daty zapisywane są jako ISO (np. '2026-11-19T15:10:00+00:00'),
+    # więc ujednolicenie 'T' na spację ułatwia porównanie z 'YYYY-MM-DD HH:MM:SS'
+    if dt_from:
+        query += " AND REPLACE(f.departure_date_time, 'T', ' ') >= ?"
+        params.append(dt_from)
+    if dt_to:
+        query += " AND REPLACE(f.departure_date_time, 'T', ' ') <= ?"
+        params.append(dt_to)
+    if airport_code:
+        query += " AND (f.departure_airport_id = ? OR f.arrival_airport_id = ?)"
+        params.append(airport_code)
+        params.append(airport_code)
+
+    query += " ORDER BY f.departure_date_time DESC LIMIT 300"
+
+    with connect_db() as conn:
+        cursor = conn.execute(query, params)
+        rows = cursor.fetchall()
+
+    return [
+        {
+            "callsign": r[0],
+            "from_code": r[1],
+            "to_code": r[2],
+            "from_lat": r[3],
+            "from_lon": r[4],
+            "to_lat": r[5],
+            "to_lon": r[6],
+            "time": r[7],
+        }
+        for r in rows
+    ]
