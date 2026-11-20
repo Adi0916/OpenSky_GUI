@@ -2,7 +2,7 @@ import json
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QFrame, QDateEdit, QTimeEdit,
-    QLineEdit, QSizePolicy
+    QLineEdit, QSizePolicy, QCheckBox
 )
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt, QDate, QTime
@@ -257,6 +257,7 @@ class MainWindow(QMainWindow):
             QLineEdit, QDateEdit, QTimeEdit {
                 background-color: #1f2328; color: white; border: 1px solid #555; padding: 4px;
             }
+            QCheckBox { color: #f0f0f0; spacing: 6px; padding: 2px 0; }
             QPushButton { background-color: #3b82f6; color: white; padding: 6px; border-radius: 4px; }
         """)
         filter_layout = QVBoxLayout(self.filter_box)
@@ -286,6 +287,10 @@ class MainWindow(QMainWindow):
         self.airport_input.setPlaceholderText("e.g. EPKK, WAW")
         filter_layout.addWidget(self.airport_input)
 
+        self.chk_skip_same_location = QCheckBox("Skip same origin and destination")
+        self.chk_skip_same_location.setChecked(True)
+        filter_layout.addWidget(self.chk_skip_same_location)
+
         btn_apply = QPushButton("Show on map")
         btn_apply.clicked.connect(self.apply_flight_filters)
         filter_layout.addWidget(btn_apply)
@@ -299,17 +304,23 @@ class MainWindow(QMainWindow):
         self.filter_box.setVisible(checked)
 
     def apply_flight_filters(self):
-            day_str = self.date_edit.date().toString("yyyy-MM-dd")
-            t_from = self.time_from.time().toString("HH:mm")
-            t_to = self.time_to.time().toString("HH:mm")
-            airport = self.airport_input.text().strip().upper() or None
+        day_str = self.date_edit.date().toString("yyyy-MM-dd")
+        t_from = self.time_from.time().toString("HH:mm")
+        t_to = self.time_to.time().toString("HH:mm")
+        airport = self.airport_input.text().strip().upper() or None
+        skip_same = self.chk_skip_same_location.isChecked()
 
-            dt_from = f"{day_str} {t_from}:00"
-            dt_to = f"{day_str} {t_to}:59"
+        dt_from = f"{day_str} {t_from}:00"
+        dt_to = f"{day_str} {t_to}:59"
 
-            flights = get_flights_for_map(dt_from=dt_from, dt_to=dt_to, airport_code=airport)
-            payload = json.dumps(flights)
-            self.web_view.page().runJavaScript(f"renderFlights({payload});")
+        flights = get_flights_for_map(
+            dt_from=dt_from,
+            dt_to=dt_to,
+            airport_code=airport,
+            skip_same_location=skip_same,
+        )
+        payload = json.dumps(flights)
+        self.web_view.page().runJavaScript(f"renderFlights({payload});")
 
     def open_window(self, key, window_cls):
         if key not in self.windows or self.windows[key] is None:

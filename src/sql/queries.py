@@ -171,7 +171,12 @@ def get_system_health_report(status_filter=None):
 
 #6: Trasy lotów do wyświetlenia na mapie (wylot -> przylot z koordynatami)
 
-def get_flights_for_map(dt_from=None, dt_to=None, airport_code=None):
+def get_flights_for_map(
+    dt_from=None,
+    dt_to=None,
+    airport_code=None,
+    skip_same_location=None,
+):
     query = '''
         SELECT
             COALESCE(ac.callsign, f.aircraft_id) AS callsign,
@@ -193,6 +198,12 @@ def get_flights_for_map(dt_from=None, dt_to=None, airport_code=None):
     '''
     params = []
 
+    if skip_same_location:
+        query += '''
+          AND f.departure_airport_id != f.arrival_airport_id
+          AND NOT (dep.latitude = arr.latitude AND dep.longitude = arr.longitude)
+        '''
+
     # W etl.py daty zapisywane są jako ISO (np. '2026-11-19T15:10:00+00:00'),
     # więc ujednolicenie 'T' na spację ułatwia porównanie z 'YYYY-MM-DD HH:MM:SS'
     if dt_from:
@@ -203,7 +214,6 @@ def get_flights_for_map(dt_from=None, dt_to=None, airport_code=None):
         params.append(dt_to)
     if airport_code:
         query += " AND (f.departure_airport_id = ? OR f.arrival_airport_id = ?)"
-        params.append(airport_code)
         params.append(airport_code)
 
     query += " ORDER BY f.departure_date_time DESC LIMIT 300"
