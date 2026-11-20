@@ -1,7 +1,7 @@
 # OpenSky_GUI
 OpenSky_GUI is a desktop application and data pipeline for collecting, storing, and exploring real-time flight and radar traffic from the OpenSky Network. It combines an automated ETL scheduler with an interactive map interface so you can ingest live telemetry and filter flights without leaving the app.
 
-<img width="2437" height="1705" alt="obraz" src="https://github.com/user-attachments/assets/24a8aaf1-4970-49e0-9389-2756769cfc05" />
+<img width="2465" height="1713" alt="obraz" src="https://github.com/user-attachments/assets/0f1c9eb9-4c37-4f2c-92c2-d24ad93149ef" />
 
 
 ## Project Description
