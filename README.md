@@ -25,6 +25,9 @@ git clone https://github.com/Adi0916/OpenSky_GUI
 # Change directory to the git repository
 cd OpenSky_GUI/
 
+# Sync with the uv manager
+uv sync
+
 # Start the main gui window with scheduler in the background
 uv run ./src/opensky_gui/__init__.py
 ```
