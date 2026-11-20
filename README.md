@@ -1,5 +1,3 @@
-# OpenSky Network SQL – Semester Project
-
 ## Project Description
 This system is designed for the automatic collection and analysis of real-time air traffic data using the [OpenSky Network API](https://openskynetwork.github.io/opensky-api/rest.html). The project implements a complete ETL (Extract, Transform, Load) process – from data extraction through API, data validation and archiving in a relational database, to analytical processing.
 
@@ -7,34 +5,20 @@ This system is designed for the automatic collection and analysis of real-time a
 
 This project uses **`uv`** for dependency and environment management.
 
-### 1. Prerequisites
-
 If you do not have `uv` installed:
 
 * **Linux/macOS:** `curl -LsSf https://astral.sh/uv/install.sh | sh`
 * **Windows:** `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-* Godot engine [https://godotengine.org/download/archive/] version 4.5 
 
-### 2. Setting up the environment
-
-In the project folder, run:
-
+### Visualisation with data download:
+To run visualisation with data download run the commands bellow in your terminal.
 ```bash
-# Install dependencies
-uv sync
+# Clone git repository
+git clone https://github.com/Adi0916/OpenSky_GUI
 
-# Run the periodic import scheduler
-uv run scheduler.py
-```
-### 3. Visualization 3D:
-Start exe or run client throught Godot engine with file project.godot in client folder. To run additional visualization run accordingly:
-```bash
-#airport traffic:
-uv run start_airport.py
+# Change directory to the git repository
+cd OpenSky_GUI/
 
-#continent distribution
-uv run start_continents.py
-
-#system health
-uv run start_health.py
+# Start the main gui window with scheduler in the background
+uv run ./src/opensky_gui/__init__.py
 ```
