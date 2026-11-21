@@ -22,7 +22,11 @@ def update_distribution(canvas, f):
 
 class ContinentsWindow(VisualizationWindow):
     def __init__(self, parent=None):
-        all_continents = [c[0] for c in get_continent_names()]
+        all_continents = [#check for empty names
+            c[0].strip()
+            for c in get_continent_names()
+            if c and c[0] is not None and str(c[0]).strip()
+        ]
         super().__init__(
             title="Continent distribution",
             update_func=update_distribution,
